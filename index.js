@@ -4,23 +4,21 @@ var Dub = module.exports = function( source ) {
 
   this.context = source.context;
 
-  var sourceChannelCount = source.buffer.numberOfChannels;
-
   // Where the audio data is stored
   this.channelBuffers = [];
 
-  while (sourceChannelCount > this.channelBuffers.length) {
+  while (source.channelCount > this.channelBuffers.length) {
     this.channelBuffers.push( new Float32Array(0) );
   }
 
   // Our processing node.
   this.node = this.context.createScriptProcessor(4096, 
-    sourceChannelCount,
-    sourceChannelCount);
+    source.channelCount,
+    source.channelCount);
 
   this.node.onaudioprocess = this.onaudioprocess.bind(this);
 
-  this.node.connect( context.destination );
+  this.node.connect( this.context.destination );
   
   source.connect(this.node);
 
